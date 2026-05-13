@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.14...3.28) # for add_link_options and implicit target directories.
 project("llama.cpp" C CXX)
+include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 
 #set(CMAKE_WARN_DEPRECATED YES)
@@ -70,6 +71,12 @@ if (MSVC)
     add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/utf-8>")
     add_compile_options("$<$<COMPILE_LANGUAGE:C>:/bigobj>")
     add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/bigobj>")
+
+    check_include_file(stdbool.h LLAMA_HAVE_STDBOOL_H_C)
+    check_include_file_cxx(stdbool.h LLAMA_HAVE_STDBOOL_H_CXX)
+    if (NOT LLAMA_HAVE_STDBOOL_H_C OR NOT LLAMA_HAVE_STDBOOL_H_CXX)
+        include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/msvc-compat)
+    endif()
 endif()
 
 if (LLAMA_STANDALONE)
