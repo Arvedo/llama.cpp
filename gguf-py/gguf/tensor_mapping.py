@@ -107,6 +107,7 @@ class TensorNameMap:
             "model.transformer.ln_f",                  # llada
             "final_norm",                              # modern-bert
             "model.norm",                              # cogvlm
+            "model.final_norm",                        # Zaya
         ),
 
         # Rope frequencies
@@ -259,6 +260,7 @@ class TensorNameMap:
             "model.transformer.blocks.{bid}.q_proj",                     # llada
             "layers.{bid}.self_attn.q_proj",                             # qwen3-embedding
             "backbone.layers.{bid}.mixer.q_proj",                        # nemotron-h
+            "model.layers.{bid}.self_attn.qkv.linear_q",                 # Zaya
         ),
 
         # Attention key
@@ -279,6 +281,7 @@ class TensorNameMap:
             "model.transformer.blocks.{bid}.k_proj",                   # llada
             "layers.{bid}.self_attn.k_proj",                           # qwen3-embedding
             "backbone.layers.{bid}.mixer.k_proj",                      # nemotron-h
+            "model.layers.{bid}.self_attn.qkv.linear_k",               # Zaya
         ),
 
         # Attention value
@@ -336,6 +339,7 @@ class TensorNameMap:
             "layers.{bid}.self_attn.o_proj",                                # qwen3-embedding
             "backbone.layers.{bid}.mixer.o_proj",                           # nemotron-h
             "model.layers.{bid}.self_attn.language_expert_dense",           # cogvlm
+            "model.layers.{bid}.self_attn.o_proj",                          # Zaya
         ),
 
         # Attention output norm
@@ -853,6 +857,12 @@ class TensorNameMap:
             "model.layers.{bid}.linear_attn.norm",  # qwen3next
             "backbone.layers.{bid}.mixer.norm",     # mamba2
             "model.layers.{bid}.self_attn.o_norm",  # kimi
+        ),
+        MODEL_TENSOR.ATTN_NORM: (
+            "model.layers.{bid}.input_layernorm",
+            "model.layers.{bid}.ln_1",
+            "model.layers.{bid}.norm1",
+            "model.layers.{bid}.input_norm",        # Zaya
         ),
 
         MODEL_TENSOR.SSM_OUT: (
