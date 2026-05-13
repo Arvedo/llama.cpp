@@ -1,3 +1,57 @@
+All Credits to:
+https://github.com/Zyphra/llama.cpp
+and 
+https://github.com/Juste-Leo2/llama.cpp
+
+Unfortunately, I don’t have the time right now to properly review this AI slop and contribute in a meaningful way. I just wanted to see how it performs. The thinking process is pretty long, but the responses have been good so far.
+
+- If you have enough VRAM, use vLLM!
+- If they already have a `.gguf` model, skip steps 3, 4 and 5.
+
+```powershell
+# Open: "Developer PowerShell for VS 2022"
+git clone https://github.com/Arvedo/llama.cpp
+cd llama.cpp
+
+# 1) Install Python deps for conversion
+python -m pip install -r requirements.txt
+
+# 2) Build the tools
+cmake -B build
+cmake --build build --config Release
+
+# 3) Put the original Hugging Face model files in:
+#    models\zaya\
+#    (needs config.json, tokenizer files, and model weights)
+
+# 4) Convert HF model -> GGUF
+python convert_hf_to_gguf.py models\zaya
+
+# 5) Optional: quantize to a smaller GGUF
+build\bin\Release\llama-quantize `
+  models\zaya\ggml-model-f16.gguf `
+  models\zaya\ggml-model-Q4_K_M.gguf `
+  Q4_K_M
+
+# 6) Test locally
+build\bin\Release\llama-cli -m .\models\ZAYA1-8B-Q8_0.gguf -cnv
+
+# 7) Deploy as a local API server
+build\bin\Release\llama-server `
+  -m .\models\ZAYA1-8B-Q8_0.gguf `
+  --host 0.0.0.0 `
+  --port 8080
+```
+
+Then call it like this:
+
+```powershell
+curl http://127.0.0.1:8080/v1/chat/completions `
+  -H "Content-Type: application/json" `
+  -d "{\"model\":\"default\",\"messages\":[{\"role\":\"user\",\"content\":\"Hello\"}]}"
+```
+
+
 # llama.cpp
 
 ![llama](https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png)
